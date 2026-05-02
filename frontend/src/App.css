@@ -1,0 +1,46 @@
+/* Additional custom styles that work with Tailwind */
+
+.course-card {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    transition: all 0.3s ease;
+}
+
+.course-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+}
+
+.btn-primary {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+}
+
+.btn-secondary:hover {
+    background-color: var(--accent-bg);
+}
+
+.input-field {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-h);
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-bg);
+}
