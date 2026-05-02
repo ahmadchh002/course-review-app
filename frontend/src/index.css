@@ -52,15 +52,12 @@ body {
 }
 
 #root {
-    width: 1126px;
-    max-width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    border-inline: 1px solid var(--border);
+    width: 100%;
     min-height: 100svh;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    text-align: left;
 }
 
 h1,
@@ -113,4 +110,42 @@ code {
     h2 {
         font-size: 20px;
     }
+}
+
+
+/* Focus styles for inputs */
+
+input:focus {
+    outline: none;
+    ring: 2px solid var(--accent);
+}
+
+
+/* Smooth transitions */
+
+* {
+    transition: all 0.2s ease;
+}
+
+
+/* Custom scrollbar */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--border);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+    opacity: 0.8;
 }

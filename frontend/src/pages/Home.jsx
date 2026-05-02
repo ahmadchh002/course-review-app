@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { courseService } from '../services/courseService';
+import { Search, BookOpen, Star } from 'lucide-react';
 
 const Home = () => {
   const [courses, setCourses] = useState([]);
@@ -36,57 +37,70 @@ const Home = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div style={{ color: 'var(--text)' }}>Loading courses...</div>
+        <div className="text-white text-xl animate-pulse">Loading courses...</div>
       </div>
     );
   }
 
   return (
-    <div className="px-4 py-8" style={{ maxWidth: '1126px', margin: '0 auto', width: '100%' }}>
-      <h1>Available Courses</h1>
-      
-      {/* Search Bar */}
-      <div className="mb-8">
-        <input
-          type="text"
-          placeholder="Search by course name or code..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            border: '1px solid var(--border)',
-            background: 'var(--bg)',
-            color: 'var(--text-h)'
-          }}
-          className="w-full max-w-md px-4 py-2 rounded focus:outline-none"
-        />
+    <div className="w-full max-w-[1200px] mx-auto p-10 rounded-2xl bg-black/40 backdrop-blur-xl shadow-2xl border border-white/10 mt-8 mb-12">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-white/10 pb-6 gap-6">
+        <div>
+          <h1 className="text-[2.5rem] font-bold text-white mb-2 leading-tight">Available Courses</h1>
+          <p className="text-white/70 text-lg">Browse and read reviews from fellow students.</p>
+        </div>
+        
+        {/* Search Bar */}
+        <div className="relative w-full md:w-96">
+          <input
+            type="text"
+            placeholder="Search by course name or code..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full bg-white/5 border border-white/20 rounded-lg py-3 pl-12 pr-4 text-white placeholder-white/50 outline-none focus:border-white/50 focus:bg-white/10 transition-all shadow-inner"
+          />
+          <Search className="absolute left-4 top-3.5 w-5 h-5 text-white/50" />
+        </div>
       </div>
 
       {/* Course Grid */}
       {filteredCourses.length === 0 ? (
-        <p style={{ color: 'var(--text)' }}>No courses found.</p>
+        <div className="text-center py-24 text-white/60 bg-white/5 rounded-xl border border-white/5">
+          <BookOpen className="w-16 h-16 mx-auto mb-4 opacity-50" />
+          <p className="text-xl font-medium">No courses found matching your search.</p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCourses.map((course) => (
             <Link to={`/courses/${course.id}`} key={course.id}>
-              <div 
-                className="rounded-lg shadow-md p-6 hover:shadow-lg transition-all hover:-translate-y-1"
-                style={{
-                  border: '1px solid var(--border)',
-                  background: 'var(--bg)'
-                }}
-              >
-                <h3 className="text-xl font-semibold mb-2" style={{ color: 'var(--text-h)' }}>
-                  {course.name}
-                </h3>
-                <p style={{ color: 'var(--text)' }} className="mb-2">Code: {course.code}</p>
-                <p className="text-sm" style={{ color: 'var(--text)' }}>{course.department}</p>
-                {course.averageRating && (
-                  <div className="mt-3 flex items-center">
-                    <span style={{ color: 'var(--accent)' }} className="mr-1">★</span>
-                    <span style={{ color: 'var(--text-h)' }}>{course.averageRating.toFixed(1)}</span>
-                    <span className="ml-2" style={{ color: 'var(--text)' }}>({course.reviewCount} reviews)</span>
+              <div className="group rounded-xl p-7 transition-all duration-300 bg-white/5 border border-white/10 hover:bg-white/10 hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(0,0,0,0.4)] hover:border-white/20 h-full flex flex-col relative overflow-hidden">
+                {/* Decorative accent */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d62851] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-xl font-bold text-white group-hover:text-white transition-colors line-clamp-2 leading-tight">
+                    {course.name}
+                  </h3>
+                </div>
+                
+                <div className="mt-auto">
+                  <div className="flex items-center space-x-3 mb-4 mt-4">
+                    <span className="px-3 py-1 rounded-md bg-[#d62851]/20 border border-[#d62851]/30 text-xs font-semibold text-[#ffa8be]">
+                      {course.code}
+                    </span>
+                    <span className="text-sm text-white/60 font-medium truncate">
+                      {course.department}
+                    </span>
                   </div>
-                )}
+                  
+                  {course.averageRating !== undefined && (
+                    <div className="flex items-center pt-4 border-t border-white/10">
+                      <Star className="w-5 h-5 text-[#ffc107] mr-1.5" fill="#ffc107" />
+                      <span className="font-bold text-white text-lg mr-2">{course.averageRating.toFixed(1)}</span>
+                      <span className="text-sm text-white/50">({course.reviewCount} reviews)</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </Link>
           ))}

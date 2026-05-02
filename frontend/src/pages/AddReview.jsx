@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { reviewService } from '../services/reviewService';
 import toast from 'react-hot-toast';
+import { ArrowLeft, Save, X, Plus, Trash2, Link as LinkIcon, UserPlus, UserMinus } from 'lucide-react';
 
 const AddReview = () => {
   const { id } = useParams();
@@ -77,11 +78,11 @@ const AddReview = () => {
 
   if (!user) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <p className="text-red-500">Please login to add a review</p>
+      <div className="w-full max-w-[800px] mx-auto p-10 mt-8 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 text-center">
+        <p className="text-[#ff4d79] text-xl mb-6 font-semibold">Please login to add a review</p>
         <button
           onClick={() => navigate('/login')}
-          className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-md"
+          className="bg-[#d62851] hover:bg-[#b01e3e] text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300"
         >
           Go to Login
         </button>
@@ -90,187 +91,225 @@ const AddReview = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <h1 className="text-3xl font-bold mb-6">Add Review</h1>
-      
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Grade Selection */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Grade *
-          </label>
-          <select
-            name="grade"
-            value={formData.grade}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="">Select Grade</option>
-            {grades.map(g => (
-              <option key={g} value={g}>{g}</option>
-            ))}
-          </select>
-        </div>
+    <div className="w-full max-w-[800px] mx-auto mt-8 mb-12 space-y-8">
+      {/* Back Link */}
+      <button 
+        onClick={() => navigate(`/courses/${id}`)}
+        className="inline-flex items-center space-x-2 text-white/70 hover:text-white transition-colors"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        <span>Back to Course</span>
+      </button>
 
-        {/* Difficulty Slider */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Difficulty Level (1-5)
-          </label>
-          <input
-            type="range"
-            name="difficulty"
-            min="1"
-            max="5"
-            value={formData.difficulty}
-            onChange={handleChange}
-            className="w-full"
-          />
-          <div className="text-center text-gray-600">
-            {formData.difficulty === 1 && 'Very Easy'}
-            {formData.difficulty === 2 && 'Easy'}
-            {formData.difficulty === 3 && 'Medium'}
-            {formData.difficulty === 4 && 'Hard'}
-            {formData.difficulty === 5 && 'Very Hard'}
+      <div className="bg-black/40 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 p-10 relative overflow-hidden">
+        {/* Decorative Top Line */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d62851] to-transparent"></div>
+
+        <h1 className="text-[2.5rem] font-bold text-white mb-8 leading-tight border-b border-white/10 pb-6">Add Review</h1>
+        
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Grade Selection */}
+            <div>
+              <label className="block text-[13px] font-semibold text-white mb-2 uppercase tracking-wider">
+                Grade <span className="text-[#d62851]">*</span>
+              </label>
+              <select
+                name="grade"
+                value={formData.grade}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white outline-none focus:border-white focus:bg-white/10 transition-all appearance-none"
+              >
+                <option value="" className="text-black">Select Grade</option>
+                {grades.map(g => (
+                  <option key={g} value={g} className="text-black">{g}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Difficulty Slider */}
+            <div>
+              <label className="block text-[13px] font-semibold text-white mb-2 uppercase tracking-wider">
+                Difficulty Level <span className="text-[#d62851]">*</span>
+              </label>
+              <div className="flex items-center space-x-4 h-[46px] bg-white/5 px-4 rounded-lg border border-white/10">
+                <input
+                  type="range"
+                  name="difficulty"
+                  min="1"
+                  max="5"
+                  value={formData.difficulty}
+                  onChange={handleChange}
+                  className="w-full accent-[#d62851]"
+                />
+                <span className="text-white font-bold w-6 text-center">{formData.difficulty}</span>
+              </div>
+              <div className="flex justify-between text-xs text-white/50 mt-1 px-1">
+                <span>Easy</span>
+                <span>Hard</span>
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Advice */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            General Advice
-          </label>
-          <textarea
-            name="advice"
-            rows="4"
-            value={formData.advice}
-            onChange={handleChange}
-            placeholder="Share your advice for future students..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
+          {/* Advice */}
+          <div>
+            <label className="block text-[13px] font-semibold text-white mb-2 uppercase tracking-wider">
+              General Advice
+            </label>
+            <textarea
+              name="advice"
+              rows="4"
+              value={formData.advice}
+              onChange={handleChange}
+              placeholder="Share your advice for future students..."
+              className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white outline-none focus:border-white focus:bg-white/10 transition-all resize-none placeholder-white/30"
+            />
+          </div>
 
-        {/* Resource Links */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Resource Links
-          </label>
-          {formData.resources.map((resource, index) => (
-            <div key={index} className="flex gap-2 mb-2">
-              <input
-                type="url"
-                value={resource}
-                onChange={(e) => handleArrayChange('resources', index, e.target.value)}
-                placeholder="https://..."
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-              />
-              {formData.resources.length > 1 && (
+          <div className="space-y-6 pt-4 border-t border-white/10">
+            {/* Resource Links */}
+            <div>
+              <div className="flex justify-between items-center mb-3">
+                <label className="text-[13px] font-semibold text-white uppercase tracking-wider flex items-center space-x-2">
+                  <LinkIcon className="w-4 h-4 text-[#ffc107]" />
+                  <span>Resource Links</span>
+                </label>
                 <button
                   type="button"
-                  onClick={() => removeArrayField('resources', index)}
-                  className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600"
+                  onClick={() => addArrayField('resources')}
+                  className="text-[#4da6ff] hover:text-white transition-colors text-sm flex items-center space-x-1"
                 >
-                  Remove
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add More</span>
                 </button>
-              )}
+              </div>
+              <div className="space-y-3">
+                {formData.resources.map((resource, index) => (
+                  <div key={index} className="flex gap-3">
+                    <input
+                      type="url"
+                      value={resource}
+                      onChange={(e) => handleArrayChange('resources', index, e.target.value)}
+                      placeholder="https://..."
+                      className="flex-1 px-4 py-2.5 bg-white/5 border border-white/20 rounded-lg text-white outline-none focus:border-white focus:bg-white/10 transition-all placeholder-white/30"
+                    />
+                    {formData.resources.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeArrayField('resources', index)}
+                        className="bg-red-500/20 text-red-400 p-2.5 rounded-lg hover:bg-red-500 hover:text-white transition-colors border border-red-500/30 shrink-0"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addArrayField('resources')}
-            className="text-blue-500 hover:text-blue-600 text-sm"
-          >
-            + Add another resource
-          </button>
-        </div>
 
-        {/* Good Instructors */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Good Instructors
-          </label>
-          {formData.goodInstructors.map((instructor, index) => (
-            <div key={index} className="flex gap-2 mb-2">
-              <input
-                type="text"
-                value={instructor}
-                onChange={(e) => handleArrayChange('goodInstructors', index, e.target.value)}
-                placeholder="Instructor name"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-              />
-              {formData.goodInstructors.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeArrayField('goodInstructors', index)}
-                  className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600"
-                >
-                  Remove
-                </button>
-              )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Good Instructors */}
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <label className="text-[13px] font-semibold text-white uppercase tracking-wider flex items-center space-x-2">
+                    <UserPlus className="w-4 h-4 text-green-400" />
+                    <span>Good Instructors</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => addArrayField('goodInstructors')}
+                    className="text-[#4da6ff] hover:text-white transition-colors text-sm flex items-center space-x-1"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  {formData.goodInstructors.map((instructor, index) => (
+                    <div key={index} className="flex gap-3">
+                      <input
+                        type="text"
+                        value={instructor}
+                        onChange={(e) => handleArrayChange('goodInstructors', index, e.target.value)}
+                        placeholder="Instructor name"
+                        className="flex-1 px-4 py-2.5 bg-white/5 border border-white/20 rounded-lg text-white outline-none focus:border-white focus:bg-white/10 transition-all placeholder-white/30"
+                      />
+                      {formData.goodInstructors.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeArrayField('goodInstructors', index)}
+                          className="bg-red-500/20 text-red-400 p-2.5 rounded-lg hover:bg-red-500 hover:text-white transition-colors border border-red-500/30 shrink-0"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bad Instructors */}
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <label className="text-[13px] font-semibold text-white uppercase tracking-wider flex items-center space-x-2">
+                    <UserMinus className="w-4 h-4 text-red-400" />
+                    <span>Avoid Instructors</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => addArrayField('badInstructors')}
+                    className="text-[#4da6ff] hover:text-white transition-colors text-sm flex items-center space-x-1"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  {formData.badInstructors.map((instructor, index) => (
+                    <div key={index} className="flex gap-3">
+                      <input
+                        type="text"
+                        value={instructor}
+                        onChange={(e) => handleArrayChange('badInstructors', index, e.target.value)}
+                        placeholder="Instructor name"
+                        className="flex-1 px-4 py-2.5 bg-white/5 border border-white/20 rounded-lg text-white outline-none focus:border-white focus:bg-white/10 transition-all placeholder-white/30"
+                      />
+                      {formData.badInstructors.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeArrayField('badInstructors', index)}
+                          className="bg-red-500/20 text-red-400 p-2.5 rounded-lg hover:bg-red-500 hover:text-white transition-colors border border-red-500/30 shrink-0"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addArrayField('goodInstructors')}
-            className="text-blue-500 hover:text-blue-600 text-sm"
-          >
-            + Add instructor
-          </button>
-        </div>
+          </div>
 
-        {/* Bad Instructors */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Bad Instructors
-          </label>
-          {formData.badInstructors.map((instructor, index) => (
-            <div key={index} className="flex gap-2 mb-2">
-              <input
-                type="text"
-                value={instructor}
-                onChange={(e) => handleArrayChange('badInstructors', index, e.target.value)}
-                placeholder="Instructor name"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-              />
-              {formData.badInstructors.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeArrayField('badInstructors', index)}
-                  className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600"
-                >
-                  Remove
-                </button>
-              )}
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addArrayField('badInstructors')}
-            className="text-blue-500 hover:text-blue-600 text-sm"
-          >
-            + Add instructor
-          </button>
-        </div>
-
-        {/* Submit Button */}
-        <div className="flex gap-4">
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex-1 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition disabled:bg-gray-400"
-          >
-            {loading ? 'Submitting...' : 'Submit Review'}
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate(`/courses/${id}`)}
-            className="flex-1 bg-gray-500 text-white py-2 rounded-md hover:bg-gray-600 transition"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+          {/* Submit Button */}
+          <div className="flex gap-4 pt-6 border-t border-white/10 mt-8">
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 flex items-center justify-center space-x-2 bg-[#d62851] text-white py-3.5 rounded-lg hover:bg-[#b01e3e] transition-all duration-300 disabled:bg-gray-500 font-bold shadow-lg shadow-[#d62851]/30"
+            >
+              <Save className="w-5 h-5" />
+              <span>{loading ? 'Submitting...' : 'Submit Review'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate(`/courses/${id}`)}
+              className="w-32 flex items-center justify-center space-x-2 bg-white/10 text-white py-3.5 rounded-lg hover:bg-white/20 transition-all duration-300 font-bold border border-white/10"
+            >
+              <X className="w-5 h-5" />
+              <span>Cancel</span>
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

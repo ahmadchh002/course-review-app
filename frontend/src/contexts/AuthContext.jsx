@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import api from '../services/api';
 
 const AuthContext = createContext();
 
@@ -21,35 +22,24 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      // Mock login - accepts any email/password
-      // For testing: email: test@example.com, password: any password
-      if (email && password) {
-        const mockUser = {
-          id: 1,
-          name: email.split('@')[0], // Use part of email as name
-          email: email,
-          studentId: '12345'
-        };
-        const mockToken = 'mock-token-12345';
-        
-        localStorage.setItem('token', mockToken);
-        localStorage.setItem('user', JSON.stringify(mockUser));
-        setUser(mockUser);
-        toast.success('Login successful!');
-        return true;
-      } else {
-        toast.error('Please enter email and password');
-        return false;
-      }
+      const response = await api.post('/auth/login', { email, password });
+      
+      const { token, user: loggedInUser } = response.data;
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(loggedInUser));
+      setUser(loggedInUser);
+      toast.success('Login successful!');
+      return true;
     } catch (error) {
-      toast.error('Login failed');
+      const message = error.response?.data?.message || 'Login failed. Please check your credentials.';
+      toast.error(message);
       return false;
     }
   };
 
   const signup = async (userData) => {
     try {
-      // Mock signup - accepts any data
       const { name, email, password, studentId } = userData;
       
       if (!name || !email || !password) {
@@ -62,21 +52,26 @@ export const AuthProvider = ({ children }) => {
         return false;
       }
 
-      const mockUser = {
-        id: Date.now(),
-        name: name,
-        email: email,
-        studentId: studentId || ''
-      };
-      const mockToken = 'mock-token-' + Date.now();
+      const response = await api.post('/auth/signup', {
+        name,
+        email,
+        password,
+        studentId
+      });
       
-      localStorage.setItem('token', mockToken);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      setUser(mockUser);
+      // Some APIs might auto-login on signup, returning token/user. 
+      // If so, we set them. Otherwise we just return true.
+      if (response.data && response.data.token && response.data.user) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        setUser(response.data.user);
+      }
+      
       toast.success('Account created successfully!');
       return true;
     } catch (error) {
-      toast.error('Signup failed');
+      const message = error.response?.data?.message || 'Signup failed. Please try again.';
+      toast.error(message);
       return false;
     }
   };

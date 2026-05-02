@@ -1,41 +1,62 @@
 import React from 'react';
+import { Star, Link as LinkIcon, User, Calendar, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 const ReviewCard = ({ review }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 mb-4">
-      <div className="flex justify-between items-start mb-4">
+    <div className="bg-white/5 border border-white/10 rounded-xl p-6 transition-all hover:bg-white/10">
+      <div className="flex flex-col md:flex-row justify-between items-start mb-6 gap-4 border-b border-white/10 pb-4">
         <div>
-          <span className="text-lg font-semibold">Grade: {review.grade}</span>
-          <div className="flex items-center mt-1">
-            <span className="text-gray-600">Difficulty: </span>
-            <div className="ml-2 flex">
-              {[...Array(5)].map((_, i) => (
-                <span key={i} className={`text-lg ${i < review.difficulty ? 'text-red-500' : 'text-gray-300'}`}>
-                  ★
-                </span>
-              ))}
+          <div className="flex items-center space-x-3 mb-2">
+            <span className="text-[#d62851] font-bold text-lg">Grade: {review.grade}</span>
+            <div className="h-4 w-px bg-white/20"></div>
+            <div className="flex items-center">
+              <span className="text-white/70 mr-2 text-sm">Difficulty: </span>
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <Star 
+                    key={i} 
+                    className={`w-4 h-4 ${i < review.difficulty ? 'text-[#ff4d79]' : 'text-white/20'}`} 
+                    fill={i < review.difficulty ? 'currentColor' : 'none'}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
-        <div className="text-sm text-gray-500">
-          {new Date(review.createdAt).toLocaleDateString()}
+        <div className="flex items-center space-x-4 text-sm text-white/50 bg-black/20 px-3 py-1.5 rounded-lg">
+          <div className="flex items-center space-x-1.5">
+            <User className="w-3.5 h-3.5" />
+            <span>{review.studentName || 'Anonymous'}</span>
+          </div>
+          <div className="h-3 w-px bg-white/20"></div>
+          <div className="flex items-center space-x-1.5">
+            <Calendar className="w-3.5 h-3.5" />
+            <span>{new Date(review.createdAt).toLocaleDateString()}</span>
+          </div>
         </div>
       </div>
 
       {review.advice && (
-        <div className="mb-3">
-          <h4 className="font-semibold text-gray-700">Advice:</h4>
-          <p className="text-gray-600">{review.advice}</p>
+        <div className="mb-5">
+          <h4 className="font-semibold text-white mb-2 flex items-center space-x-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#4da6ff]"></span>
+            <span>Advice</span>
+          </h4>
+          <p className="text-white/70 bg-black/20 p-4 rounded-lg leading-relaxed text-sm">{review.advice}</p>
         </div>
       )}
 
       {review.resources && review.resources.length > 0 && (
-        <div className="mb-3">
-          <h4 className="font-semibold text-gray-700">Resources:</h4>
-          <ul className="list-disc list-inside">
+        <div className="mb-5">
+          <h4 className="font-semibold text-white mb-2 flex items-center space-x-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ffc107]"></span>
+            <span>Resources</span>
+          </h4>
+          <ul className="space-y-2">
             {review.resources.map((resource, index) => (
-              <li key={index}>
-                <a href={resource} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+              <li key={index} className="flex items-center space-x-2">
+                <LinkIcon className="w-3.5 h-3.5 text-white/40" />
+                <a href={resource} target="_blank" rel="noopener noreferrer" className="text-[#4da6ff] hover:text-white transition-colors text-sm truncate max-w-full">
                   {resource}
                 </a>
               </li>
@@ -45,25 +66,27 @@ const ReviewCard = ({ review }) => {
       )}
 
       {(review.goodInstructors?.length > 0 || review.badInstructors?.length > 0) && (
-        <div className="grid grid-cols-2 gap-4 mt-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
           {review.goodInstructors?.length > 0 && (
-            <div>
-              <h4 className="font-semibold text-green-600">Good Instructors:</h4>
-              <p className="text-gray-600">{review.goodInstructors.join(', ')}</p>
+            <div className="bg-green-500/10 border border-green-500/20 p-3 rounded-lg">
+              <h4 className="font-semibold text-green-400 mb-1 flex items-center space-x-1.5 text-sm">
+                <ThumbsUp className="w-3.5 h-3.5" />
+                <span>Good Instructors</span>
+              </h4>
+              <p className="text-white/80 text-sm">{review.goodInstructors.join(', ')}</p>
             </div>
           )}
           {review.badInstructors?.length > 0 && (
-            <div>
-              <h4 className="font-semibold text-red-600">Bad Instructors:</h4>
-              <p className="text-gray-600">{review.badInstructors.join(', ')}</p>
+            <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
+              <h4 className="font-semibold text-red-400 mb-1 flex items-center space-x-1.5 text-sm">
+                <ThumbsDown className="w-3.5 h-3.5" />
+                <span>Avoid Instructors</span>
+              </h4>
+              <p className="text-white/80 text-sm">{review.badInstructors.join(', ')}</p>
             </div>
           )}
         </div>
       )}
-
-      <div className="mt-3 text-sm text-gray-400">
-        Posted by: {review.studentName || 'Anonymous'}
-      </div>
     </div>
   );
 };
