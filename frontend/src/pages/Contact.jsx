@@ -101,6 +101,21 @@ const Contact = () => {
           </form>
         </div>
       </div>
+
+      {/* Google Map Section */}
+      <div className="bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 p-2 sm:p-4 h-[350px] md:h-[450px]">
+        <iframe 
+          src="https://maps.google.com/maps?q=FAST%20NUCES%20Lahore&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+          width="100%" 
+          height="100%" 
+          style={{ border: 0, borderRadius: '0.75rem' }} 
+          allowFullScreen="" 
+          loading="lazy" 
+          referrerPolicy="no-referrer-when-downgrade"
+          title="FAST NUCES Lahore Location"
+          className="rounded-xl filter invert-[90%] hue-rotate-180 brightness-95 contrast-85 opacity-90 transition-all hover:opacity-100 hover:filter-none duration-500"
+        ></iframe>
+      </div>
     </div>
   );
 };

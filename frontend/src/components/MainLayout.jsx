@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Search, LogOut } from 'lucide-react';
+import { Search, LogOut, LayoutDashboard } from 'lucide-react';
 import bgImage from '../assets/fast_bg.jpg';
 
 const MainLayout = ({ children }) => {
@@ -48,10 +48,16 @@ const MainLayout = ({ children }) => {
             <Search className="absolute right-3 top-2 w-4 h-4 text-white" />
           </div>
           {user && (
-            <button onClick={handleLogout} className="hover:text-[#d62851] transition-colors flex items-center space-x-2">
-              <LogOut className="w-5 h-5" />
-              <span className="text-sm font-semibold">Logout</span>
-            </button>
+            <div className="flex items-center space-x-6">
+              <Link to="/dashboard" className="hover:text-[#d62851] transition-colors flex items-center space-x-2">
+                <LayoutDashboard className="w-5 h-5" />
+                <span className="text-sm font-semibold">Dashboard</span>
+              </Link>
+              <button onClick={handleLogout} className="hover:text-[#d62851] transition-colors flex items-center space-x-2">
+                <LogOut className="w-5 h-5" />
+                <span className="text-sm font-semibold">Logout</span>
+              </button>
+            </div>
           )}
         </div>
       </nav>
