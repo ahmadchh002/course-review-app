@@ -1,9 +1,20 @@
 import React from 'react';
-import { BookOpen, Star, TrendingUp, Clock } from 'lucide-react';
+import { BookOpen, Star, TrendingUp, Clock, Bell } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setActiveTab } from '../reducer/notificationSlice';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleNotificationClick = () => {
+    // Set global state to notifications before navigating
+    dispatch(setActiveTab('notifications'));
+    navigate('/settings');
+  };
 
   const stats = [
     { label: 'Total Reviews', value: '12', icon: Star, color: 'text-[#d62851]', bg: 'bg-[#d62851]/10' },
@@ -14,12 +25,24 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Welcome back, {user?.email?.split('@')[0] || 'User'}! 👋</h1>
-        <p className="text-white/60">Here is what's happening with your courses today.</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Welcome back, {user?.email?.split('@')[0] || 'User'}! 👋
+          </h1>
+          <p className="text-white/60">Here is what's happening with your courses today.</p>
+        </div>
+        
+        {/* Notification Bell from image_0d9b1d.png */}
+        <button 
+          onClick={handleNotificationClick}
+          className="relative p-3 bg-white/5 border border-white/10 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all"
+        >
+          <Bell className="w-6 h-6" />
+          <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-[#d62851] rounded-full border-2 border-[#121212]"></span>
+        </button>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => {
           const Icon = stat.icon;
@@ -37,12 +60,11 @@ const Dashboard = () => {
         })}
       </div>
 
-      {/* Recent Activity */}
       <div className="bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 p-8">
         <h2 className="text-xl font-bold text-white mb-6">Recent Activity</h2>
         <div className="space-y-4">
           {[1, 2, 3].map((_, i) => (
-            <div key={i} className="flex items-center space-x-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+            <div key={i} className="flex items-center space-x-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-pointer">
               <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
                 <Star className="w-5 h-5 text-[#ffc107]" />
               </div>
