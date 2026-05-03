@@ -1,7 +1,8 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import MainLayout from './components/MainLayout';
+import DashboardLayout from './components/DashboardLayout';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -10,6 +11,7 @@ import AddReview from './pages/AddReview';
 import About from './pages/About';
 import Services from './pages/Services';
 import Contact from './pages/Contact';
+import Dashboard from './pages/Dashboard';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -25,10 +27,22 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+const MainLayoutWrapper = () => (
+  <MainLayout>
+    <Outlet />
+  </MainLayout>
+);
+
+const DashboardLayoutWrapper = () => (
+  <DashboardLayout>
+    <Outlet />
+  </DashboardLayout>
+);
+
 function App() {
   return (
-    <MainLayout>
-      <Routes>
+    <Routes>
+      <Route element={<MainLayoutWrapper />}>
         <Route path="/" element={
           <ProtectedRoute>
             <Home />
@@ -49,8 +63,16 @@ function App() {
             <AddReview />
           </ProtectedRoute>
         } />
-      </Routes>
-    </MainLayout>
+      </Route>
+
+      <Route element={<DashboardLayoutWrapper />}>
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
+      </Route>
+    </Routes>
   );
 }
 
