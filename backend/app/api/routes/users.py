@@ -6,7 +6,7 @@ from beanie import PydanticObjectId
 
 router = APIRouter()
 
-@router.post("/register", response_model=UserOut)
+@router.post("/signup", response_model=UserOut)
 async def register(user_data: UserCreate):
     # Check if user already exists
     existing = await User.find_one(User.email == user_data.email)
