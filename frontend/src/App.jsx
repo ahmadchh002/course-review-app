@@ -12,6 +12,8 @@ import About from './pages/About';
 import Services from './pages/Services';
 import Contact from './pages/Contact';
 import Dashboard from './pages/Dashboard';
+import MyReviews from './pages/MyReviews';
+import Settings from './pages/Settings';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -69,6 +71,16 @@ function App() {
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/reviews" element={
+          <ProtectedRoute>
+            <MyReviews />
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/settings" element={
+          <ProtectedRoute>
+            <Settings />
           </ProtectedRoute>
         } />
       </Route>
