@@ -9,3 +9,7 @@ backend/.venv/
 bulk_add_courses.py
 courses.json
 
+# Python cache/compiled
+__pycache__/
+*.py[cod]
+*$py.class
