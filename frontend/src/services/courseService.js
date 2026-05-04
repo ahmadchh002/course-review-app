@@ -23,6 +23,17 @@ export const courseService = {
         }
     },
 
+    // Create a new course (admin only)
+    createCourse: async(courseData) => {
+        try {
+            const response = await api.post('/courses/', courseData);
+            return response.data;
+        } catch (error) {
+            console.error('Error creating course:', error);
+            throw error;
+        }
+    },
+
     // Search courses
     searchCourses: async(query) => {
         try {

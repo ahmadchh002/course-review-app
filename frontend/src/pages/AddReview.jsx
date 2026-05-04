@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { reviewService } from '../services/reviewService';
 import toast from 'react-hot-toast';
 import { ArrowLeft, Save, X, Plus, Trash2, Link as LinkIcon, UserPlus, UserMinus } from 'lucide-react';
+import { courseService } from '../services/courseService';
 
 const AddReview = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [course, setCourse] = useState(null);
   const [formData, setFormData] = useState({
     grade: '',
     difficulty: 3,
@@ -20,6 +22,20 @@ const AddReview = () => {
   });
 
   const grades = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D', 'F'];
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const data = await courseService.getCourseById(id);
+        setCourse(data);
+      } catch (error) {
+        toast.error('Could not load course details');
+        navigate(`/courses/${id}`);
+      }
+    };
+
+    fetchCourse();
+  }, [id, navigate]);
 
   const handleChange = (e) => {
     setFormData({
@@ -54,23 +70,31 @@ const AddReview = () => {
       return;
     }
 
-    // Filter out empty strings
-    const reviewData = {
+    if (!course?.code) {
+      toast.error('Course data is still loading. Please try again.');
+      return;
+    }
+
+
+    // Send both core and extended review fields to backend
+    const reviewPayload = {
+      course_code: course.code,
+      rating: Number(formData.difficulty),
+      content: formData.advice?.trim() || `Grade: ${formData.grade}`,
       grade: formData.grade,
-      difficulty: parseInt(formData.difficulty),
-      advice: formData.advice,
-      resources: formData.resources.filter(r => r.trim() !== ''),
-      goodInstructors: formData.goodInstructors.filter(i => i.trim() !== ''),
-      badInstructors: formData.badInstructors.filter(i => i.trim() !== '')
+      difficulty_level: Number(formData.difficulty),
+      resources: formData.resources.filter((resource) => resource.trim() !== ''),
+      goodInstructors: formData.goodInstructors.filter((instructor) => instructor.trim() !== ''),
+      badInstructors: formData.badInstructors.filter((instructor) => instructor.trim() !== ''),
     };
 
     setLoading(true);
     try {
-      await reviewService.addReview(id, reviewData);
+      await reviewService.addReview(reviewPayload);
       toast.success('Review added successfully!');
       navigate(`/courses/${id}`);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to add review');
+      toast.error(error.response?.data?.detail || 'Failed to add review');
     } finally {
       setLoading(false);
     }

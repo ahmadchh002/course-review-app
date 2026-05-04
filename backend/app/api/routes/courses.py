@@ -12,7 +12,7 @@ router = APIRouter()
 async def create_course(course_data: CourseCreate, current_user: User = Depends(get_current_user)):
     # Only admin can create courses; for simplicity, check if user email contains "admin"
     # You can enhance this with roles later
-    if "admin" not in current_user.email:
+    if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
     
     existing = await Course.find_one(Course.code == course_data.code)
@@ -29,7 +29,7 @@ async def list_courses(skip: int = 0, limit: int = 100):
     return [
         CourseOut(
             id=str(c.id), code=c.code, name=c.name,
-            description=c.description, instructor=c.instructor,
+            description=c.description,
             avg_rating=c.avg_rating
         ) for c in courses
     ]
@@ -40,12 +40,12 @@ async def get_course(course_id: str):
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
     return CourseOut(id=str(course.id), code=course.code, name=course.name,
-                     description=course.description, instructor=course.instructor,
+                     description=course.description,
                      avg_rating=course.avg_rating)
 
 @router.put("/{course_id}", response_model=CourseOut)
 async def update_course(course_id: str, update_data: CourseUpdate, current_user: User = Depends(get_current_user)):
-    if "admin" not in current_user.email:
+    if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
     
     course = await Course.get(course_id)
@@ -56,12 +56,12 @@ async def update_course(course_id: str, update_data: CourseUpdate, current_user:
         setattr(course, field, value)
     await course.save()
     return CourseOut(id=str(course.id), code=course.code, name=course.name,
-                     description=course.description, instructor=course.instructor,
+                     description=course.description,
                      avg_rating=course.avg_rating)
 
 @router.delete("/{course_id}")
 async def delete_course(course_id: str, current_user: User = Depends(get_current_user)):
-    if "admin" not in current_user.email:
+    if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
     
     course = await Course.get(course_id)

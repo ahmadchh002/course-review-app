@@ -5,7 +5,6 @@ class Course(Document):
     code: str
     name: str
     description: str
-    instructor: str
     avg_rating: Optional[float] = 0.0
     class Settings:
         name = "courses"

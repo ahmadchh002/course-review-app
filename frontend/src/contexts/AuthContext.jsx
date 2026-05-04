@@ -22,17 +22,23 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post('/users/login', { email, password });
       
-      const { token, user: loggedInUser } = response.data;
+      const { access_token } = response.data;  // changed from 'token'
       
-      localStorage.setItem('token', token);
+      // After login, fetch the current user's data
+      const userResponse = await api.get('/users/me', {
+        headers: { Authorization: `Bearer ${access_token}` }
+      });
+      const loggedInUser = userResponse.data;
+      
+      localStorage.setItem('token', access_token);
       localStorage.setItem('user', JSON.stringify(loggedInUser));
       setUser(loggedInUser);
       toast.success('Login successful!');
       return true;
     } catch (error) {
-      const message = error.response?.data?.message || 'Login failed. Please check your credentials.';
+      const message = error.response?.data?.detail || 'Login failed. Please check your credentials.';
       toast.error(message);
       return false;
     }
@@ -40,37 +46,32 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (userData) => {
     try {
-      const { name, email, password, studentId } = userData;
+      const { name, email, password } = userData;
       
       if (!name || !email || !password) {
         toast.error('Please fill all required fields');
         return false;
       }
-
+  
       if (password.length < 6) {
         toast.error('Password must be at least 6 characters');
         return false;
       }
-
-      const response = await api.post('/auth/signup', {
-        name,
-        email,
-        password,
-        studentId
+  
+      // Use 'full_name' (not 'fullname')
+      await api.post('/users/signup', {
+        full_name: name,   // changed from 'fullname'
+        email: email,
+        password: password,
       });
       
-      // Some APIs might auto-login on signup, returning token/user. 
-      // If so, we set them. Otherwise we just return true.
-      if (response.data && response.data.token && response.data.user) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        setUser(response.data.user);
-      }
+      // Optionally auto-login after signup
+      await login(email, password);
       
       toast.success('Account created successfully!');
       return true;
     } catch (error) {
-      const message = error.response?.data?.message || 'Signup failed. Please try again.';
+      const message = error.response?.data?.detail || 'Signup failed. Please try again.';
       toast.error(message);
       return false;
     }

@@ -1,9 +1,10 @@
 from beanie import Document
 from pydantic import EmailStr
-from typing import Optional
+from typing import Optional, Literal
 from datetime import datetime
 
 class User(Document):
+    role: Literal["user", "admin"] = "user"
     email: EmailStr
     hashed_password: str
     full_name: Optional[str] = None

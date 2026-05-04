@@ -21,11 +21,11 @@ const CourseDetails = () => {
   const fetchCourseAndReviews = async () => {
     try {
       setLoading(true);
-      const [courseData, reviewsData] = await Promise.all([
-        courseService.getCourseById(id),
-        reviewService.getReviewsForCourse(id)
-      ]);
+  
+      const courseData = await courseService.getCourseById(id);
       setCourse(courseData);
+  
+      const reviewsData = await reviewService.getReviewsForCourse(courseData.code);
       setReviews(reviewsData);
     } catch (error) {
       console.error('Error loading course details:', error);

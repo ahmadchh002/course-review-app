@@ -28,7 +28,12 @@ async def create_review(review_data: ReviewCreate, current_user: User = Depends(
         user_id=current_user.id,
         course_code=review_data.course_code,
         rating=review_data.rating,
-        content=review_data.content
+        content=review_data.content,
+        grade=review_data.grade,
+        difficulty_level=review_data.difficulty_level or review_data.rating,
+        resources=review_data.resources,
+        goodInstructors=review_data.goodInstructors,
+        badInstructors=review_data.badInstructors,
     )
     await review.insert()
     
@@ -44,6 +49,11 @@ async def create_review(review_data: ReviewCreate, current_user: User = Depends(
         course_code=review.course_code,
         rating=review.rating,
         content=review.content,
+        grade=review.grade,
+        difficulty_level=review.difficulty_level,
+        resources=review.resources,
+        goodInstructors=review.goodInstructors,
+        badInstructors=review.badInstructors,
         created_at=review.created_at
     )
 
@@ -57,6 +67,11 @@ async def get_reviews_for_course(course_code: str):
             course_code=r.course_code,
             rating=r.rating,
             content=r.content,
+            grade=r.grade,
+            difficulty_level=r.difficulty_level,
+            resources=r.resources,
+            goodInstructors=r.goodInstructors,
+            badInstructors=r.badInstructors,
             created_at=r.created_at
         ) for r in reviews
     ]
@@ -68,7 +83,7 @@ async def update_review(review_id: str, update_data: ReviewUpdate, current_user:
         raise HTTPException(status_code=404, detail="Review not found")
     
     # Only the author can update
-    if review.user_id != current_user.id and "admin" not in current_user.email:
+    if review.user_id != current_user.id and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
     
     for field, value in update_data.dict(exclude_unset=True).items():
@@ -90,6 +105,11 @@ async def update_review(review_id: str, update_data: ReviewUpdate, current_user:
         course_code=review.course_code,
         rating=review.rating,
         content=review.content,
+        grade=review.grade,
+        difficulty_level=review.difficulty_level,
+        resources=review.resources,
+        goodInstructors=review.goodInstructors,
+        badInstructors=review.badInstructors,
         created_at=review.created_at
     )
 
@@ -99,7 +119,7 @@ async def delete_review(review_id: str, current_user: User = Depends(get_current
     if not review:
         raise HTTPException(status_code=404, detail="Review not found")
     
-    if review.user_id != current_user.id and "admin" not in current_user.email:
+    if review.user_id != current_user.id and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
     
     course_code = review.course_code

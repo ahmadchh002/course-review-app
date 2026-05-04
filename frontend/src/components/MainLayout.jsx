@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Search, LogOut, LayoutDashboard } from 'lucide-react';
+import { Search, LogOut, LayoutDashboard, PlusSquare } from 'lucide-react';
 import bgImage from '../assets/fast_bg.jpg';
 
 const MainLayout = ({ children }) => {
@@ -12,6 +12,8 @@ const MainLayout = ({ children }) => {
     logout();
     navigate('/login');
   };
+
+  const isAdmin = user?.role === 'admin';
 
   return (
     <div 
@@ -53,6 +55,12 @@ const MainLayout = ({ children }) => {
                 <LayoutDashboard className="w-5 h-5" />
                 <span className="text-sm font-semibold">Dashboard</span>
               </Link>
+              {isAdmin && (
+                <Link to="/courses/add" className="hover:text-[#d62851] transition-colors flex items-center space-x-2">
+                  <PlusSquare className="w-5 h-5" />
+                  <span className="text-sm font-semibold">Add Course</span>
+                </Link>
+              )}
               <button onClick={handleLogout} className="hover:text-[#d62851] transition-colors flex items-center space-x-2">
                 <LogOut className="w-5 h-5" />
                 <span className="text-sm font-semibold">Logout</span>

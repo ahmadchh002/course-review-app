@@ -2,22 +2,26 @@ import React from 'react';
 import { Star, Link as LinkIcon, User, Calendar, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 const ReviewCard = ({ review }) => {
+  const displayRating = Number(review.rating) || 0;
+  const displayDifficulty = Number(review.difficulty_level ?? review.rating) || 0;
+  const displayDate = review.created_at || review.createdAt;
+
   return (
     <div className="bg-white/5 border border-white/10 rounded-xl p-6 transition-all hover:bg-white/10">
       <div className="flex flex-col md:flex-row justify-between items-start mb-6 gap-4 border-b border-white/10 pb-4">
         <div>
           <div className="flex items-center space-x-3 mb-2">
-            <span className="text-[#d62851] font-bold text-lg">Grade: {review.grade}</span>
+            <span className="text-[#d62851] font-bold text-lg">Rating: {displayRating}/5</span>
             <div className="h-4 w-px bg-white/20"></div>
             <div className="flex items-center">
               <span className="text-white/70 mr-2 text-sm">Difficulty: </span>
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
-                  <Star 
-                    key={i} 
-                    className={`w-4 h-4 ${i < review.difficulty ? 'text-[#ff4d79]' : 'text-white/20'}`} 
-                    fill={i < review.difficulty ? 'currentColor' : 'none'}
-                  />
+                  <Star
+                  key={i}
+                  className={`w-4 h-4 ${i < displayDifficulty ? 'text-[#ff4d79]' : 'text-white/20'}`}
+                  fill={i < displayDifficulty ? 'currentColor' : 'none'}
+                />
                 ))}
               </div>
             </div>
@@ -31,18 +35,18 @@ const ReviewCard = ({ review }) => {
           <div className="h-3 w-px bg-white/20"></div>
           <div className="flex items-center space-x-1.5">
             <Calendar className="w-3.5 h-3.5" />
-            <span>{new Date(review.createdAt).toLocaleDateString()}</span>
+            <span>{displayDate ? new Date(displayDate).toLocaleDateString() : '-'}</span>
           </div>
         </div>
       </div>
 
-      {review.advice && (
+      {(review.content || review.advice) && (
         <div className="mb-5">
           <h4 className="font-semibold text-white mb-2 flex items-center space-x-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#4da6ff]"></span>
-            <span>Advice</span>
+            <span>Review</span>
           </h4>
-          <p className="text-white/70 bg-black/20 p-4 rounded-lg leading-relaxed text-sm">{review.advice}</p>
+          <p className="text-white/70 bg-black/20 p-4 rounded-lg leading-relaxed text-sm">{review.content || review.advice}</p>
         </div>
       )}
 

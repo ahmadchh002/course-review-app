@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import CourseDetails from './pages/CourseDetails';
 import AddReview from './pages/AddReview';
+import AddCourse from './pages/AddCourse';
 import About from './pages/About';
 import Services from './pages/Services';
 import Contact from './pages/Contact';
@@ -26,6 +27,25 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
   
+  return children;
+};
+
+const AdminRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-64 text-white">Loading...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const isAdmin = user?.role === 'admin';
+  if (!isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
   return children;
 };
 
@@ -64,6 +84,11 @@ function App() {
           <ProtectedRoute>
             <AddReview />
           </ProtectedRoute>
+        } />
+        <Route path="/courses/add" element={
+          <AdminRoute>
+            <AddCourse />
+          </AdminRoute>
         } />
       </Route>
 

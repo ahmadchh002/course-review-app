@@ -2,10 +2,10 @@ import axios from 'axios';
 
 // Use mock mode if backend is not available
 // Set to true so the app is navigable when there is no backend running.
-const USE_MOCK = true; 
+const USE_MOCK = false; 
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: 'http://localhost:8000/',
     timeout: 5000, // 5 second timeout
     headers: {
         'Content-Type': 'application/json',

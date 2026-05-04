@@ -18,9 +18,10 @@ async def register(user_data: UserCreate):
         email=user_data.email,
         hashed_password=hashed,
         full_name=user_data.full_name,
+        role = "user",
     )
     await user.insert()
-    return UserOut(id=str(user.id), email=user.email, full_name=user.full_name, is_active=user.is_active, created_at=user.created_at)
+    return UserOut(id=str(user.id), email=user.email, full_name=user.full_name,role=user.role, is_active=user.is_active, created_at=user.created_at)
 
 @router.post("/login", response_model=Token)
 async def login(user_data: UserLogin):
@@ -28,9 +29,9 @@ async def login(user_data: UserLogin):
     if not user or not verify_password(user_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    access_token = create_access_token(data={"sub": str(user.id)})
+    access_token = create_access_token(data={"sub": str(user.id), "role": user.role})
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/me", response_model=UserOut)
 async def get_me(current_user: User = Depends(get_current_user)):
-    return UserOut(id=str(current_user.id), email=current_user.email, full_name=current_user.full_name, is_active=current_user.is_active, created_at=current_user.created_at)
+    return UserOut(id=str(current_user.id), email=current_user.email, full_name=current_user.full_name, role=current_user.role, is_active=current_user.is_active, created_at=current_user.created_at)
