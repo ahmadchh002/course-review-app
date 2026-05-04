@@ -18,19 +18,19 @@ const CourseDetails = () => {
     fetchCourseAndReviews();
   }, [id]);
 
-  const fetchCourseAndReviews = async () => {
+  const fetchCourseAndReviews = async ({ silent = false } = {}) => {
     try {
-      setLoading(true);
-  
+      if (!silent) setLoading(true);
+
       const courseData = await courseService.getCourseById(id);
       setCourse(courseData);
-  
+
       const reviewsData = await reviewService.getReviewsForCourse(courseData.code);
       setReviews(reviewsData);
     } catch (error) {
       console.error('Error loading course details:', error);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
@@ -113,7 +113,13 @@ const CourseDetails = () => {
             </div>
           ) : (
             reviews.map((review) => (
-              <ReviewCard key={review.id} review={review} />
+              <ReviewCard
+                key={review.id}
+                review={review}
+                currentUserId={user?.id}
+                isAdmin={user?.role === 'admin'}
+                onDeleted={() => fetchCourseAndReviews({ silent: true })}
+              />
             ))
           )}
         </div>

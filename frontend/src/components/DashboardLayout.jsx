@@ -15,7 +15,7 @@ const DashboardLayout = ({ children }) => {
   };
 
   const navItems = [
-    { name: 'Overview', path: '/dashboard', icon: LayoutDashboard },
+   // { name: 'Overview', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Explore Courses', path: '/', icon: BookOpen },
     { name: 'My Reviews', path: '/dashboard/reviews', icon: Star },
     { name: 'Settings', path: '/dashboard/settings', icon: Settings },
@@ -78,14 +78,14 @@ const DashboardLayout = ({ children }) => {
           </div>
           
           <div className="flex items-center space-x-6">
-            <div className="relative">
+            {/* <div className="relative">
               <input 
                 type="text" 
                 placeholder="Search..." 
                 className="bg-black/20 border border-white/10 rounded-lg py-2 pl-4 pr-10 text-sm outline-none focus:border-white/30 focus:bg-white/5 w-64 placeholder-white/50 transition-all text-white"
               />
               <Search className="absolute right-3 top-2.5 w-4 h-4 text-white/50" />
-            </div>
+            </div> */}
             
             <button className="relative p-2 rounded-full hover:bg-white/10 transition-colors text-white/70 hover:text-white">
               <Bell className="w-5 h-5" />

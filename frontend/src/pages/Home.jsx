@@ -88,16 +88,13 @@ const Home = () => {
                     <span className="px-3 py-1 rounded-md bg-[#d62851]/20 border border-[#d62851]/30 text-xs font-semibold text-[#ffa8be]">
                       {course.code}
                     </span>
-                    <span className="text-sm text-white/60 font-medium truncate">
-                      {course.department}
-                    </span>
                   </div>
                   
-                  {course.averageRating !== undefined && (
+                  {course.avg_rating !== undefined && (
                     <div className="flex items-center pt-4 border-t border-white/10">
                       <Star className="w-5 h-5 text-[#ffc107] mr-1.5" fill="#ffc107" />
-                      <span className="font-bold text-white text-lg mr-2">{course.averageRating.toFixed(1)}</span>
-                      <span className="text-sm text-white/50">({course.reviewCount} reviews)</span>
+                      <span className="font-bold text-white text-lg mr-2">{Number(course.avg_rating || 0).toFixed(1)}</span>
+                      <span className="text-sm text-white/50">({course.review_count || 0} reviews)</span>
                     </div>
                   )}
                 </div>

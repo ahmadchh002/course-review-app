@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setActiveTab } from '../reducer/notificationSlice';
+import { reviewService } from '../services/reviewService';
 
 const Dashboard = () => {
   const { user } = useAuth();

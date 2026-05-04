@@ -41,17 +41,17 @@ const MainLayout = ({ children }) => {
           <Link to="/contact" className="hover:text-gray-300 transition-colors">Contact</Link>
         </div>
         <div className="relative flex items-center space-x-6">
-          <div className="relative">
+          {/* <div className="relative">
             <input 
               type="text" 
               placeholder="Search..." 
               className="bg-transparent border border-white/60 rounded-md py-1.5 pl-4 pr-10 text-sm outline-none focus:border-white w-64 placeholder-white/80 transition-colors"
             />
             <Search className="absolute right-3 top-2 w-4 h-4 text-white" />
-          </div>
+          </div> */}
           {user && (
             <div className="flex items-center space-x-6">
-              <Link to="/dashboard" className="hover:text-[#d62851] transition-colors flex items-center space-x-2">
+              <Link to="/dashboard/reviews" className="hover:text-[#d62851] transition-colors flex items-center space-x-2">
                 <LayoutDashboard className="w-5 h-5" />
                 <span className="text-sm font-semibold">Dashboard</span>
               </Link>

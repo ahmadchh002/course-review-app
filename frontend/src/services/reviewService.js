@@ -21,5 +21,32 @@ export const reviewService = {
             console.error('Error adding review:', error);
             throw error;
         }
-    }
+    },
+
+    deleteReview: async (reviewId) => {
+        try {
+            const response = await api.delete(`/reviews/${reviewId}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error deleting review:', error);
+            throw error;
+        }
+    },
+
+
+    updateReview: async (reviewId, reviewData) => {
+        const response = await api.put(`/reviews/${reviewId}`, reviewData);
+        return response.data;
+    },
+
+
+    getMyReviews: async () => {
+        try {
+            const response = await api.get(`/users/me/reviews`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching my reviews:', error);
+            throw error;
+        }
+    },
 };

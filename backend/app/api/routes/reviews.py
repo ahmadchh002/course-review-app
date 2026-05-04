@@ -36,12 +36,13 @@ async def create_review(review_data: ReviewCreate, current_user: User = Depends(
         badInstructors=review_data.badInstructors,
     )
     await review.insert()
+    course_collection = Course.get_motor_collection()
+    await course_collection.update_one({"_id": course.id}, {"$inc": {"review_count": 1}})
     
     # Update course average rating
     all_reviews = await Review.find(Review.course_code == review_data.course_code).to_list()
     avg = sum(r.rating for r in all_reviews) / len(all_reviews)
-    course.avg_rating = round(avg, 2)
-    await course.save()
+    await course_collection.update_one({"_id": course.id}, {"$set": {"avg_rating": round(avg, 2)}})
     
     return ReviewOut(
         id=str(review.id),
@@ -124,6 +125,8 @@ async def delete_review(review_id: str, current_user: User = Depends(get_current
     
     course_code = review.course_code
     await review.delete()
+    course_collection = Course.get_motor_collection()
+    await course_collection.update_one({"code": course_code}, {"$inc": {"review_count": -1}})
     
     # Recompute average rating
     remaining = await Review.find(Review.course_code == course_code).to_list()
@@ -131,9 +134,14 @@ async def delete_review(review_id: str, current_user: User = Depends(get_current
     if course:
         if remaining:
             avg = sum(r.rating for r in remaining) / len(remaining)
-            course.avg_rating = round(avg, 2)
+            new_avg = round(avg, 2)
+            new_count = len(remaining)
         else:
-            course.avg_rating = 0.0
-        await course.save()
+            new_avg = 0.0
+            new_count = 0
+        await course_collection.update_one(
+            {"_id": course.id},
+            {"$set": {"avg_rating": new_avg, "review_count": new_count}},
+        )
     
     return {"detail": "Review deleted"}

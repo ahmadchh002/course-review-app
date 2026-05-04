@@ -16,3 +16,4 @@ class CourseOut(BaseModel):
     name: str
     description: str
     avg_rating: Optional[float]
+    review_count: int = 0

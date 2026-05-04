@@ -21,7 +21,7 @@ async def create_course(course_data: CourseCreate, current_user: User = Depends(
     
     course = Course(**course_data.dict())
     await course.insert()
-    return CourseOut(id=str(course.id), **course_data.dict(), avg_rating=0.0)
+    return CourseOut(id=str(course.id), **course_data.dict(), avg_rating=0.0, review_count=0)
 
 @router.get("/", response_model=List[CourseOut])
 async def list_courses(skip: int = 0, limit: int = 100):
@@ -30,7 +30,8 @@ async def list_courses(skip: int = 0, limit: int = 100):
         CourseOut(
             id=str(c.id), code=c.code, name=c.name,
             description=c.description,
-            avg_rating=c.avg_rating
+            avg_rating=c.avg_rating,
+            review_count=c.review_count
         ) for c in courses
     ]
 
@@ -41,7 +42,8 @@ async def get_course(course_id: str):
         raise HTTPException(status_code=404, detail="Course not found")
     return CourseOut(id=str(course.id), code=course.code, name=course.name,
                      description=course.description,
-                     avg_rating=course.avg_rating)
+                     avg_rating=course.avg_rating,
+                     review_count=course.review_count)
 
 @router.put("/{course_id}", response_model=CourseOut)
 async def update_course(course_id: str, update_data: CourseUpdate, current_user: User = Depends(get_current_user)):
@@ -57,7 +59,8 @@ async def update_course(course_id: str, update_data: CourseUpdate, current_user:
     await course.save()
     return CourseOut(id=str(course.id), code=course.code, name=course.name,
                      description=course.description,
-                     avg_rating=course.avg_rating)
+                     avg_rating=course.avg_rating,
+                     review_count=course.review_count)
 
 @router.delete("/{course_id}")
 async def delete_course(course_id: str, current_user: User = Depends(get_current_user)):

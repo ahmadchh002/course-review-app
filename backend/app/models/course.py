@@ -6,6 +6,7 @@ class Course(Document):
     name: str
     description: str
     avg_rating: Optional[float] = 0.0
+    review_count: int = 0
     class Settings:
         name = "courses"
         indexes = [
